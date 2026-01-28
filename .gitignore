@@ -42,3 +42,14 @@ next-env.d.ts
 
 # AI
 .claude
+
+
+# Drizzle ORM
+/drizzle
+.drizzle
+
+# Local history (VSCode)
+.history/
+
+playwright-report/
+.playwright/
