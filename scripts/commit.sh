@@ -39,6 +39,17 @@ fi
 
 echo ""
 
+# test e2e
+echo "🧪 Running end-to-end tests..."
+if npm run test:e2e; then
+  echo "✓ End-to-end tests passed"
+else
+  echo "✗ End-to-end tests failed"
+  all_passed=false
+fi
+echo ""
+
+
 if [ "$all_passed" = false ]; then
   echo "❌ Some checks failed. Skipping commit."
   exit 1

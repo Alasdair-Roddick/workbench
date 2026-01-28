@@ -1,5 +1,7 @@
 # Workbench
 
+[![CI](https://github.com/Alasdair-Roddick/workbench/actions/workflows/ci.yml/badge.svg)](https://github.com/Alasdair-Roddick/workbench/actions/workflows/ci.yml)
+
 ---
 
 ## Getting Started
