@@ -18,6 +18,11 @@ describe('database connection test', () => {
 describe('users table', () => {
   let testUserId: string;
 
+  beforeAll(async () => {
+    // Clean up any leftover test data from previous runs
+    await db.delete(users).where(eq(users.githubId, 'test-github-123'));
+  });
+
   afterAll(async () => {
     if (testUserId) {
       await db.delete(users).where(eq(users.id, testUserId));
