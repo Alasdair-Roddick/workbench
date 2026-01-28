@@ -1,11 +1,8 @@
-import { config } from 'dotenv';
 import { describe, it, expect } from 'vitest';
 import { neon } from '@neondatabase/serverless';
 import { eq } from 'drizzle-orm';
 import { db } from '@/app/db';
 import { users } from '@/app/db/schema';
-
-config({ path: '.env.local' });
 
 describe('database connection test', () => {
   it('should connect to the database and run a simple query', async () => {
