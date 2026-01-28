@@ -30,11 +30,13 @@ jobs:
 
       - name: Test
         run: npm run test -- --run
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Test e2e
-        run: npm run test:e2e -- --run
-      - name: Run database migrations
-        run: npx drizzle-kit migrate:latest
+        run: npm run test:e2e
 
+      - name: Run database migrations
+        run: npx drizzle-kit migrate
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
