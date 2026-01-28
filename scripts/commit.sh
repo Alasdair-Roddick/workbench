@@ -1,23 +1,49 @@
 #!/bin/bash
 
-set -e
+all_passed=true
 
 echo "🧹 Running format..."
-npm run format
+if npm run format; then
+  echo "✓ Format passed"
+else
+  echo "✗ Format failed"
+  all_passed=false
+fi
 
 echo ""
 echo "🔍 Running lint..."
-npm run lint
+if npm run lint; then
+  echo "✓ Lint passed"
+else
+  echo "✗ Lint failed"
+  all_passed=false
+fi
 
 echo ""
 echo "🏗️  Running build..."
-npm run build
+if npm run build; then
+  echo "✓ Build passed"
+else
+  echo "✗ Build failed"
+  all_passed=false
+fi
 
 echo ""
 echo "🧪 Running tests..."
-npm run test -- --run
+if npm run test -- --run; then
+  echo "✓ Tests passed"
+else
+  echo "✗ Tests failed"
+  all_passed=false
+fi
 
 echo ""
+
+if [ "$all_passed" = false ]; then
+  echo "❌ Some checks failed. Skipping commit."
+  exit 1
+fi
+
 echo "✅ All checks passed!"
 echo ""
 
