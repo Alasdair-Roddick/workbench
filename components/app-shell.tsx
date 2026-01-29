@@ -27,7 +27,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="min-h-screen bg-black"
+          className="bg-background min-h-screen"
         >
           <Navbar />
           <motion.main

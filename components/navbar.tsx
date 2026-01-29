@@ -10,7 +10,7 @@ export function Navbar() {
   const user = useUserStore((state) => state.user);
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/95 backdrop-blur-sm">
+    <nav className="border-border bg-background/95 sticky top-0 z-50 w-full border-b backdrop-blur-sm">
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -18,28 +18,28 @@ export function Navbar() {
             <div className="flex size-9 items-center justify-center rounded-xl bg-linear-to-br from-violet-500 to-fuchsia-500 shadow-lg shadow-violet-500/25">
               <span className="text-lg font-bold text-white">W</span>
             </div>
-            <span className="text-lg font-semibold text-white transition-colors group-hover:text-violet-400">
+            <span className="text-foreground text-lg font-semibold transition-colors group-hover:text-violet-400">
               Workbench
             </span>
           </Link>
 
           {/* Navigation Links */}
-          <div className="hidden items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2 py-1.5 md:flex">
+          <div className="border-border bg-muted/50 hidden items-center gap-1 rounded-full border px-2 py-1.5 md:flex">
             <Link
               href="/"
-              className="rounded-full px-4 py-1.5 text-sm font-medium text-white transition-all hover:bg-white/10"
+              className="text-foreground hover:bg-muted rounded-full px-4 py-1.5 text-sm font-medium transition-all"
             >
               Home
             </Link>
             <Link
               href="/projects"
-              className="rounded-full px-4 py-1.5 text-sm font-medium text-neutral-400 transition-all hover:bg-white/10 hover:text-white"
+              className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-full px-4 py-1.5 text-sm font-medium transition-all"
             >
               Projects
             </Link>
             <Link
               href="/docs"
-              className="rounded-full px-4 py-1.5 text-sm font-medium text-neutral-400 transition-all hover:bg-white/10 hover:text-white"
+              className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-full px-4 py-1.5 text-sm font-medium transition-all"
             >
               Docs
             </Link>
@@ -54,7 +54,7 @@ export function Navbar() {
                 <Button
                   variant="ghost"
                   onClick={handleLogin}
-                  className="text-sm font-medium text-neutral-400 hover:bg-transparent hover:text-white"
+                  className="text-muted-foreground hover:text-foreground text-sm font-medium hover:bg-transparent"
                 >
                   Log in
                 </Button>
