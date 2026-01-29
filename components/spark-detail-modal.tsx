@@ -7,28 +7,22 @@ import { useState } from 'react';
 import { createIdea } from '@/app/api/ideas/routes';
 import { deleteSparkById } from '@/app/api/sparks/routes';
 import { useUserStore } from '@/app/store/store';
+import { useWorkbenchStore } from '@/app/store/workbench-store';
 import { formatDistanceToNow } from 'date-fns';
 
 interface SparkDetailModalProps {
   spark: Spark | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSparkDeleted: () => void;
-  onPromoted: () => void;
 }
 
-export function SparkDetailModal({
-  spark,
-  open,
-  onOpenChange,
-  onSparkDeleted,
-  onPromoted,
-}: SparkDetailModalProps) {
+export function SparkDetailModal({ spark, open, onOpenChange }: SparkDetailModalProps) {
   const [isPromoting, setIsPromoting] = useState(false);
   const [showPromoteForm, setShowPromoteForm] = useState(false);
   const [description, setDescription] = useState('');
   const [notes, setNotes] = useState('');
   const user = useUserStore((state) => state.user);
+  const { removeSpark, addIdea } = useWorkbenchStore();
 
   if (!spark) return null;
 
@@ -37,7 +31,7 @@ export function SparkDetailModal({
 
     setIsPromoting(true);
     try {
-      await createIdea({
+      const newIdea = await createIdea({
         title: spark.title,
         userId: user.id,
         sparkOriginId: spark.id,
@@ -45,11 +39,16 @@ export function SparkDetailModal({
         notes: notes || undefined,
       });
       await deleteSparkById(spark.id);
+
+      // Update store
+      removeSpark(spark.id);
+      addIdea(newIdea);
+
+      // Reset form
       setShowPromoteForm(false);
       setDescription('');
       setNotes('');
       onOpenChange(false);
-      onPromoted();
     } catch (error) {
       console.error('Failed to promote spark:', error);
     } finally {
@@ -60,15 +59,24 @@ export function SparkDetailModal({
   const handleDelete = async () => {
     try {
       await deleteSparkById(spark.id);
+      removeSpark(spark.id);
       onOpenChange(false);
-      onSparkDeleted();
     } catch (error) {
       console.error('Failed to delete spark:', error);
     }
   };
 
+  const handleClose = (isOpen: boolean) => {
+    if (!isOpen) {
+      setShowPromoteForm(false);
+      setDescription('');
+      setNotes('');
+    }
+    onOpenChange(isOpen);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="border-border bg-card sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="text-foreground">{spark.title}</DialogTitle>

@@ -4,27 +4,28 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useState } from 'react';
 import { createSpark } from '@/app/api/sparks/routes';
 import { useUserStore } from '@/app/store/store';
+import { useWorkbenchStore } from '@/app/store/workbench-store';
 
 interface SparkInputProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSparkCreated?: () => void;
 }
 
-export function SparkInput({ open, onOpenChange, onSparkCreated }: SparkInputProps) {
+export function SparkInput({ open, onOpenChange }: SparkInputProps) {
   const [value, setValue] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const user = useUserStore((state) => state.user);
+  const addSpark = useWorkbenchStore((state) => state.addSpark);
 
   const handleSubmit = async () => {
     if (!value.trim() || !user?.id || isSubmitting) return;
 
     setIsSubmitting(true);
     try {
-      await createSpark(value.trim(), user.id);
+      const newSpark = await createSpark(value.trim(), user.id);
+      addSpark(newSpark);
       setValue('');
       onOpenChange(false);
-      onSparkCreated?.();
     } catch (error) {
       console.error('Failed to create spark:', error);
     } finally {
