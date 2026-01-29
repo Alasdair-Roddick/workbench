@@ -6,7 +6,7 @@ import { handleLogin } from './actions';
 
 export function WelcomeScreen() {
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-black">
+    <div className="bg-background relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
       {/* Background gradient effects */}
       <div className="pointer-events-none absolute inset-0">
         <motion.div
@@ -44,7 +44,7 @@ export function WelcomeScreen() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut', delay: 0.15 }}
-          className="mb-4 text-5xl font-bold tracking-tight text-white md:text-6xl"
+          className="text-foreground mb-4 text-5xl font-bold tracking-tight md:text-6xl"
         >
           Welcome to{' '}
           <span className="bg-linear-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
@@ -57,7 +57,7 @@ export function WelcomeScreen() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut', delay: 0.25 }}
-          className="mb-10 max-w-md text-lg text-neutral-400"
+          className="text-muted-foreground mb-10 max-w-md text-lg"
         >
           Sign in to get started with your projects and unlock the full experience.
         </motion.p>
@@ -86,7 +86,7 @@ export function WelcomeScreen() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, ease: 'easeOut', delay: 0.5 }}
-          className="mt-8 text-sm text-neutral-500"
+          className="text-muted-foreground mt-8 text-sm"
         >
           Secure authentication powered by GitHub
         </motion.p>
