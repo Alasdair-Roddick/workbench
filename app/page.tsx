@@ -1,22 +1,28 @@
 'use client';
 
 import { useUserStore } from '@/app/store/store';
+import { useWorkbenchStore } from '@/app/store/workbench-store';
 import { SparkInput } from '@/components/spark-input';
 import { SparksList } from '@/components/sparks-list';
 import { SparkDetailModal } from '@/components/spark-detail-modal';
+import { IdeasList } from '@/components/ideas-list';
+import { IdeaDetailModal } from '@/components/idea-detail-modal';
 import { useState, useEffect } from 'react';
 import { getSparksByUserId } from '@/app/api/sparks/routes';
-import { Spark } from '@/app/db/schema';
+import { getActiveIdeasByUserId } from '@/app/api/ideas/routes';
+import { Spark, Idea } from '@/app/db/schema';
 import { Kbd } from '@/components/ui/kbd';
 
 export default function Home() {
   const user = useUserStore((state) => state.user);
+  const { sparks, setSparks, ideas, setIdeas } = useWorkbenchStore();
   const [sparkInputOpen, setSparkInputOpen] = useState(false);
-  const [sparks, setSparks] = useState<Spark[]>([]);
   const [selectedSpark, setSelectedSpark] = useState<Spark | null>(null);
+  const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null);
   const [sparkDetailOpen, setSparkDetailOpen] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [ideaDetailOpen, setIdeaDetailOpen] = useState(false);
 
+  // Fetch sparks on mount
   useEffect(() => {
     if (!user?.id) return;
     let cancelled = false;
@@ -26,10 +32,21 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, [user?.id, refreshKey]);
+  }, [user?.id, setSparks]);
 
-  const refreshSparks = () => setRefreshKey((k) => k + 1);
+  // Fetch ideas on mount
+  useEffect(() => {
+    if (!user?.id) return;
+    let cancelled = false;
+    getActiveIdeasByUserId(user.id).then((userIdeas) => {
+      if (!cancelled) setIdeas(userIdeas);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id, setIdeas]);
 
+  // Keyboard shortcut for quick capture
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -42,17 +59,18 @@ export default function Home() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const handleSparkCreated = () => {
-    refreshSparks();
-  };
-
   const handleSparkClick = (spark: Spark) => {
     setSelectedSpark(spark);
     setSparkDetailOpen(true);
   };
 
+  const handleIdeaClick = (idea: Idea) => {
+    setSelectedIdea(idea);
+    setIdeaDetailOpen(true);
+  };
+
   return (
-    <main className="mx-auto max-w-3xl px-6 py-16">
+    <main className="mx-auto max-w-5xl px-6 py-16">
       {/* Header */}
       <div className="mb-12 text-center">
         <h1 className="text-foreground text-4xl font-bold">
@@ -70,30 +88,40 @@ export default function Home() {
         <Kbd className="ml-2 text-xs">⌘K</Kbd>
       </button>
 
-      {/* Sparks section */}
-      <div>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-foreground text-lg font-medium">Sparks</h2>
-          {sparks.length > 0 && (
-            <span className="text-muted-foreground text-sm">{sparks.length}</span>
-          )}
+      {/* Two-column grid: Sparks and Ideas */}
+      <div className="grid gap-8 md:grid-cols-2">
+        {/* Sparks section */}
+        <div>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-foreground text-lg font-medium">Sparks</h2>
+            {sparks.length > 0 && (
+              <span className="text-muted-foreground text-sm">{sparks.length}</span>
+            )}
+          </div>
+          <SparksList sparks={sparks} onSparkClick={handleSparkClick} />
         </div>
-        <SparksList sparks={sparks} onSparkClick={handleSparkClick} />
+
+        {/* Ideas section */}
+        <div>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-foreground text-lg font-medium">Ideas</h2>
+            {ideas.length > 0 && (
+              <span className="text-muted-foreground text-sm">{ideas.length}</span>
+            )}
+          </div>
+          <IdeasList ideas={ideas} onIdeaClick={handleIdeaClick} />
+        </div>
       </div>
 
-      <SparkInput
-        open={sparkInputOpen}
-        onOpenChange={setSparkInputOpen}
-        onSparkCreated={handleSparkCreated}
-      />
+      <SparkInput open={sparkInputOpen} onOpenChange={setSparkInputOpen} />
 
       <SparkDetailModal
         spark={selectedSpark}
         open={sparkDetailOpen}
         onOpenChange={setSparkDetailOpen}
-        onSparkDeleted={refreshSparks}
-        onPromoted={refreshSparks}
       />
+
+      <IdeaDetailModal idea={selectedIdea} open={ideaDetailOpen} onOpenChange={setIdeaDetailOpen} />
     </main>
   );
 }
