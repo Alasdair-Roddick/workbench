@@ -17,7 +17,6 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
   projects: [],
   activeProjectId: null,
   setProjects: (projects) => set({ projects }),
-  setActiveProjectId: (projectId) => set({ activeProjectId: projectId }),
   addProject: (project) => set((state) => ({ projects: [project, ...state.projects] })),
   removeProject: (projectId) =>
     set((state) => ({
