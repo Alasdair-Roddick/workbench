@@ -9,9 +9,11 @@ interface ProjectStore {
   removeProject: (projectId: string) => void;
   updateProject: (projectId: string, updates: Partial<Project>) => void;
   setActiveProjectId: (projectId: string | null) => void;
+  getProjectById: (projectId: string) => Project | undefined;
+  getActiveProject: () => Project | undefined;
 }
 
-export const useProjectStore = create<ProjectStore>((set) => ({
+export const useProjectStore = create<ProjectStore>((set, get) => ({
   projects: [],
   activeProjectId: null,
   setProjects: (projects) => set({ projects }),
@@ -25,4 +27,10 @@ export const useProjectStore = create<ProjectStore>((set) => ({
     set((state) => ({
       projects: state.projects.map((p) => (p.id === projectId ? { ...p, ...updates } : p)),
     })),
+  setActiveProjectId: (projectId) => set({ activeProjectId: projectId }),
+  getProjectById: (projectId) => get().projects.find((p) => p.id === projectId),
+  getActiveProject: () => {
+    const { projects, activeProjectId } = get();
+    return activeProjectId ? projects.find((p) => p.id === activeProjectId) : undefined;
+  },
 }));
